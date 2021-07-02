@@ -13,3 +13,5 @@ Scheduler reviews priority or non priority designation to assign a parity bit an
 Report is output as a csv.
 
 Alon Hillel-Tuch 7/2/2021
+
+*Note: Simulation assumes system running program has a zero error probability of 1
