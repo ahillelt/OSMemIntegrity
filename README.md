@@ -2,7 +2,7 @@
 Priority Based Parity Bit Assignment for Memory Integrity
 
 
-This is a single-bit flip detection algorithm that uses a parity bit
+This is a single-bit bit-flip detection algorithm that uses a parity bit
 No correction is possible at present
 
 This is a simulation program to run multiple test runs
