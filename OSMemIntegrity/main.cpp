@@ -41,7 +41,7 @@ int main()
 
 	schedule->create_report("lab.csv");
 
-	for(int i = 0; i <1000000; i++){
+	for(int i = 0; i <10000; i++){
 
 	random_assignment(*schedule, 0.3, 32, 5);
 
