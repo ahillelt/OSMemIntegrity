@@ -11,3 +11,5 @@ user can define word size in bits, probability of error, and allocation between 
 Scheduler reviews priority or non priority designation to assign a parity bit and perform parity checks
 
 Report is output as a csv.
+
+Alon Hillel-Tuch 7/2/2021
