@@ -34,7 +34,7 @@ int main()
 	schedule1.add_to_table(schedule1.create_entry("101101", 0));
 	*/
 
-	random_assignment(schedule1, 0.5, 6, 20);
+	random_assignment(schedule1, 0.1, 32, 16000);
 	
 	//schedule1.display_priority_list();
 	schedule1.display_non_priority_list();
