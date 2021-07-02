@@ -3,7 +3,22 @@
 #include<iostream>
 //#include<string>
 
-//using namespace std;
+//
+
+
+
+
+//for random bit-flips func
+#include <algorithm>
+#include <random>
+
+//for reporting
+#include<fstream>
+#include<vector>
+#include<string>
+
+using namespace std;
+
 
 struct WordBit;
 struct MemAlloc;
@@ -22,6 +37,8 @@ struct WordBit
 	unsigned int bit_val : 1;
 };
 
+
+
 class PriorityScheduler
 {
 private:
@@ -37,9 +54,12 @@ private:
 
 	const int DYNAMIC_INCREASE_FACTOR = 2;
 
+	int bit_flips_introduced_non_priority;
+	int bit_flips_introduced_priority;
+
 public:
 
-	PriorityScheduler(int priority_list_init = 0, int non_priority_list_init = 0, MemAlloc** priority_ptr = nullptr, MemAlloc** non_priority_ptr = nullptr) :nonpriority_physical_size(non_priority_list_init), non_priority_logical_size(non_priority_list_init), priority_physical_size(priority_list_init), priority_logical_size(priority_list_init), priority(priority_ptr), nonpriority(non_priority_ptr) {}
+	PriorityScheduler(int priority_list_init = 0, int non_priority_list_init = 0, MemAlloc** priority_ptr = nullptr, MemAlloc** non_priority_ptr = nullptr) :nonpriority_physical_size(non_priority_list_init), non_priority_logical_size(non_priority_list_init), priority_physical_size(priority_list_init), priority_logical_size(priority_list_init), priority(priority_ptr), nonpriority(non_priority_ptr), bit_flips_introduced_non_priority(0), bit_flips_introduced_priority(0){}
 	~PriorityScheduler();
 	//getters
 	int get_priority_size() { return priority_logical_size; }
@@ -57,6 +77,14 @@ public:
 	void display_priority_list() { display_list(0); }
 	void display_non_priority_list() { display_list(1); }
 	void display_list(int8_t list);
+
+	//bit error introducer
+	void flip_bits(const double&  randomizer);
+
+
+	//checker (stores data in CSV)
+	void create_report(std::string filename);
+	void write_to_report(std::string filename);
 
 	void test_run()
 	{
@@ -94,6 +122,8 @@ MemAlloc* PriorityScheduler::create_entry(std::string word, int priority)
 
 	// create binary WordBit array
 
+	// computationally similar to summing all bits and performing %2
+	
 	word_array = new WordBit[*word_size_ptr];
 
 	zero_counter = 0;
@@ -215,4 +245,228 @@ void PriorityScheduler::display_list(int8_t list)
 		}
 		printf("\n");
 	}
+}
+
+
+void PriorityScheduler::flip_bits(const double& randomizer)
+{
+	double value;
+	std::default_random_engine defaultRandomEngine(std::random_device{}());
+	std::uniform_real_distribution<> uniformPriorityDistribution(0.0, 1.0);
+
+
+
+	int array_position;
+
+	
+	//NON PRIORITY 
+	for(size_t i = 0; i < non_priority_logical_size; i++)
+	{
+		value = static_cast<double>(uniformPriorityDistribution(defaultRandomEngine));
+
+		
+		if (value <= randomizer)
+		{
+			//introduce error
+
+			bit_flips_introduced_non_priority++;
+
+			
+			std::uniform_int_distribution<> array_select(0, *(nonpriority[i]->word_size));
+
+			array_position = static_cast<int>(array_select(defaultRandomEngine));
+
+
+			if(nonpriority[i]->word[i].bit_val ==0)
+			{
+				nonpriority[i]->word[i].bit_val = 1;
+			} else
+			{
+				nonpriority[i]->word[i].bit_val = 0;
+			}			
+		}
+		
+	}
+
+
+	//NON PRIORITY 
+	for (size_t i = 0; i < priority_logical_size; i++)
+	{
+		value = static_cast<double>(uniformPriorityDistribution(defaultRandomEngine));
+
+
+		if (value <= randomizer)
+		{
+			//introduce error
+
+			bit_flips_introduced_priority++;
+
+
+			std::uniform_int_distribution<> array_select(0, *(priority[i]->word_size));
+
+			array_position = static_cast<int>(array_select(defaultRandomEngine));
+
+
+			if (priority[i]->word[i].bit_val == 0)
+			{
+				priority[i]->word[i].bit_val = 1;
+			}
+			else
+			{
+				priority[i]->word[i].bit_val = 0;
+			}
+		}
+
+	}
+	
+}
+
+
+void PriorityScheduler::create_report(std::string filename)
+{
+	std::ofstream csv_file;
+	std::vector<std::string> header_names;
+		
+	header_names.push_back("Type");
+	header_names.push_back("Entries #");
+	header_names.push_back("True Correct");
+	header_names.push_back("True False");
+	header_names.push_back("Detected False");
+	header_names.push_back("Computational Steps");
+
+
+
+	csv_file.open(filename);
+	
+	while (!csv_file)
+	{
+		csv_file.clear();
+		csv_file.open(filename);
+	}
+	
+	for (int i = 0; i < header_names.size(); i++)
+	{
+
+		csv_file << header_names.at(i);
+		csv_file << ",";
+	}
+	csv_file << "\n";
+	
+	
+	csv_file.close();
+}
+
+	
+void PriorityScheduler::write_to_report(std::string filename)
+{
+	std::ofstream csv_file;
+	std::vector<std::string> header_names;
+
+
+
+	//counter variables
+
+	int zero_counter;
+	int one_counter;
+
+	std::vector<int> error_loc_non_priority;
+	std::vector<int> error_loc_priority;
+
+	int non_priority_errors = 0;
+	int priority_errors = 0;
+
+
+	csv_file.open(filename, std::ios_base::app);
+
+	while (!csv_file)
+	{
+		csv_file.clear();
+		csv_file.open(filename);
+	}
+
+
+	//data collection
+	zero_counter = 0;
+	one_counter = 0;
+	//non priority
+	for (size_t i = 0; i < non_priority_logical_size; i++)
+	{
+
+		zero_counter = 0;
+		one_counter = 0;
+
+		for (size_t j = 0; j < *nonpriority[i]->word_size; j++)
+		{
+
+			if (nonpriority[i]->word[j].bit_val == 0)
+			{
+				zero_counter++;
+			}
+			else
+			{
+				one_counter++;
+			}
+
+
+
+		}
+
+		if (zero_counter % 2 != *nonpriority[i]->parity)
+		{
+			non_priority_errors++;
+			error_loc_non_priority.push_back(i);
+		}
+
+	}
+
+
+	//priority
+	for (size_t i = 0; i < priority_logical_size; i++)
+	{
+
+		zero_counter = 0;
+		one_counter = 0;
+
+		for (size_t j = 0; j < *priority[i]->word_size; j++)
+		{
+
+			if (priority[i]->word[j].bit_val == 0)
+			{
+				zero_counter++;
+			}
+			else
+			{
+				one_counter++;
+			}
+
+
+
+		}
+
+		if (zero_counter % 2 != *priority[i]->parity)
+		{
+			priority_errors++;
+			error_loc_priority.push_back(i);
+		}
+
+	}
+
+
+
+
+	csv_file << "non_priority" << "," << get_non_priority_size() << "," << (non_priority_logical_size - bit_flips_introduced_non_priority) << "," << bit_flips_introduced_non_priority << "," << non_priority_errors << "," << "\n";
+	
+
+	csv_file << "priority" << "," << get_priority_size() << "," << (priority_logical_size - bit_flips_introduced_priority) << "," << bit_flips_introduced_priority << "," << priority_errors << "," << "\n";;
+	
+
+
+
+
+	csv_file.close();
+
+
+
+
+	
 }
