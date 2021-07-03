@@ -38,12 +38,14 @@ int main()
 	schedule1.add_to_table(schedule1.create_entry("101101", 0));
 	*/
 
+	cout << "Running Simulation" << endl;
+	cout << "Please Wait..." << endl;
 
 	schedule->create_report("lab.csv");
 
-	for(int i = 0; i <10000; i++){
+	for(int i = 0; i <1; i++){
 
-	random_assignment(*schedule, 0.3, 32, 5);
+	random_assignment(*schedule, 0.3, 32, 10000);
 
 	schedule->flip_bits(0.01);
 
@@ -70,7 +72,7 @@ int main()
 
 	delete schedule;
 
-	
+	cout << "Done!" << endl;
 	return 0;
 }
 

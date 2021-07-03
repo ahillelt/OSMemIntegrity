@@ -259,13 +259,13 @@ void PriorityScheduler::flip_bits(const double& randomizer)
 
 			array_position = static_cast<int>(array_select(defaultRandomEngine));
 
-			if (nonpriority[i]->word[i].bit_val == 0)
+			if (nonpriority[i]->word[array_position].bit_val == 0)
 			{
-				nonpriority[i]->word[i].bit_val = 1;
+				nonpriority[i]->word[array_position].bit_val = 1;
 			}
 			else
 			{
-				nonpriority[i]->word[i].bit_val = 0;
+				nonpriority[i]->word[array_position].bit_val = 0;
 			}
 		}
 	}
@@ -285,13 +285,13 @@ void PriorityScheduler::flip_bits(const double& randomizer)
 
 			array_position = static_cast<int>(array_select(defaultRandomEngine));
 
-			if (priority[i]->word[i].bit_val == 0)
+			if (priority[i]->word[array_position].bit_val == 0)
 			{
-				priority[i]->word[i].bit_val = 1;
+				priority[i]->word[array_position].bit_val = 1;
 			}
 			else
 			{
-				priority[i]->word[i].bit_val = 0;
+				priority[i]->word[array_position].bit_val = 0;
 			}
 		}
 	}
