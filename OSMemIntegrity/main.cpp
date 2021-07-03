@@ -19,11 +19,13 @@ using namespace std;
 void random_assignment(PriorityScheduler& schedule, double priority_alloc, int bit_length, long total_entries);
 int random_priority_distribution(const double& priority_alloc);
 
+void completion_output(const int& i, const int& runs);
+
 int main()
 {
 	PriorityScheduler* schedule = new PriorityScheduler;
 	
-
+	int runs;
 	
 	/*
 	schedule1.add_to_table(schedule1.create_entry("101011", 1));
@@ -38,14 +40,22 @@ int main()
 	schedule1.add_to_table(schedule1.create_entry("101101", 0));
 	*/
 
-	cout << "Running Simulation" << endl;
-	cout << "Please Wait..." << endl;
-
+	
+	
+	cout << "Waiting to access report file" << endl;
 	schedule->create_report("lab.csv");
+	cout << "File Accessed and new report object created" << endl;
+	
+	
+	cout << "Running Simulation" << endl;
+	cout << "Progress: 0..";
 
-	for(int i = 0; i <1; i++){
+	runs = 100000;
 
-	random_assignment(*schedule, 0.3, 32, 10000);
+	
+	for(int i = 0; i < runs; i++){
+
+	random_assignment(*schedule, 0.3, 32, 100);
 
 	schedule->flip_bits(0.01);
 
@@ -54,8 +64,13 @@ int main()
 	delete schedule;
 	schedule = new PriorityScheduler;
 
-	}
 
+
+	completion_output(i, runs);
+
+		
+	}
+	cout << endl;
 
 	/*
 	// Tester functions
@@ -134,6 +149,68 @@ int random_priority_distribution(const double& priority_alloc)
 	{
 		return 1;
 	}
+
+	
+}
+
+
+void completion_output(const int& i, const int& runs)
+{
+	double progress;
+	progress = static_cast<double>(static_cast<double>(i+1)/ static_cast<double>(runs) );
+
+	
+	if(progress==0.10)
+	{
+		cout << "...10...";
+		
+	} else if (progress == 0.20)
+	{
+		cout << "...20...";
+
+	}
+	else if (progress == 0.30)
+	{
+		cout << "...30...";
+
+	}
+	else if (progress == 0.40)
+	{
+		cout << "...40...";
+
+	}
+	else if (progress == 0.50)
+	{
+		cout << "...50...";
+
+	}
+	else if (progress == 0.60)
+	{
+		cout << "...60...";
+
+	}
+	else if (progress == 0.70)
+	{
+		cout << "...70...";
+
+	}
+	else if (progress == 0.80)
+	{
+		cout << "...80...";
+
+	}
+	else if (progress == 0.90)
+	{
+		cout << "...90...";
+
+	}
+	else if (progress == 1.00)
+	{
+		cout << "...100";
+
+	}
+	
+
 
 	
 }
