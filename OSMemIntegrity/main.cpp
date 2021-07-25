@@ -19,13 +19,13 @@ using namespace std;
 void random_assignment(PriorityScheduler& schedule, double priority_alloc, int bit_length, long total_entries);
 int random_priority_distribution(const double& priority_alloc);
 
-void completion_output(const int& i, const int& runs);
+void completion_output(const int& i, const unsigned int& runs);
 
 int main()
 {
 	PriorityScheduler* schedule = new PriorityScheduler;
 	
-	int runs;
+	unsigned int runs;
 	
 	/*
 	schedule1.add_to_table(schedule1.create_entry("101011", 1));
@@ -55,9 +55,9 @@ int main()
 	
 	for(int i = 0; i < runs; i++){
 
-	random_assignment(*schedule, 0.3, 32, 100);
+	random_assignment(*schedule, 0.15, 32, 100);
 
-	schedule->flip_bits(0.01);
+	schedule->flip_bits(0.0000016);
 
 	schedule->write_to_report("lab.csv");
 
@@ -154,7 +154,7 @@ int random_priority_distribution(const double& priority_alloc)
 }
 
 
-void completion_output(const int& i, const int& runs)
+void completion_output(const int& i, const unsigned int& runs)
 {
 	double progress;
 	progress = static_cast<double>(static_cast<double>(i+1)/ static_cast<double>(runs) );

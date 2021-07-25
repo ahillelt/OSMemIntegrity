@@ -37,16 +37,16 @@ private:
 	MemAlloc** priority;
 	MemAlloc** nonpriority;
 
-	int priority_physical_size;
-	int priority_logical_size;
+	unsigned int priority_physical_size;
+	unsigned int priority_logical_size;
 
-	int nonpriority_physical_size;
-	int non_priority_logical_size;
+	unsigned int nonpriority_physical_size;
+	unsigned int non_priority_logical_size;
 
 	const int DYNAMIC_INCREASE_FACTOR = 2;
 
-	int bit_flips_introduced_non_priority;
-	int bit_flips_introduced_priority;
+	unsigned int bit_flips_introduced_non_priority;
+	unsigned int bit_flips_introduced_priority;
 
 public:
 
@@ -61,7 +61,7 @@ public:
 	void add_to_table(MemAlloc* temp_alloc);
 
 	//helpers
-	void add_alloc(MemAlloc**& table, MemAlloc* entry, int& logical_size, int& physical_size);
+	void add_alloc(MemAlloc**& table, MemAlloc* entry, unsigned int& logical_size, unsigned int& physical_size);
 
 	//test functions
 	void display_memalloc(MemAlloc* temp_ptr);
@@ -107,7 +107,7 @@ MemAlloc* PriorityScheduler::create_entry(std::string word, int priority)
 	word_size_ptr = new unsigned int(word.length());
 	priority_ptr = new int(priority);
 
-	int zero_counter, one_counter;
+	unsigned int zero_counter, one_counter;
 
 	// create binary WordBit array
 
@@ -158,7 +158,7 @@ void PriorityScheduler::add_to_table(MemAlloc* temp_alloc)
 	}
 }
 
-void PriorityScheduler::add_alloc(MemAlloc**& table, MemAlloc* entry, int& logical_size, int& physical_size)
+void PriorityScheduler::add_alloc(MemAlloc**& table, MemAlloc* entry, unsigned int& logical_size, unsigned int& physical_size)
 {
 	//dynamic memory allocation for table
 	if (physical_size == 0)
@@ -242,7 +242,7 @@ void PriorityScheduler::flip_bits(const double& randomizer)
 	std::default_random_engine defaultRandomEngine(std::random_device{}());
 	std::uniform_real_distribution<> uniformPriorityDistribution(0.0, 1.0);
 
-	int array_position;
+	unsigned int array_position;
 
 	//NON PRIORITY
 	for (size_t i = 0; i < non_priority_logical_size; i++)
@@ -257,7 +257,7 @@ void PriorityScheduler::flip_bits(const double& randomizer)
 
 			std::uniform_int_distribution<> array_select(0, *(nonpriority[i]->word_size));
 
-			array_position = static_cast<int>(array_select(defaultRandomEngine));
+			array_position = static_cast<unsigned int>(array_select(defaultRandomEngine));
 
 			if (nonpriority[i]->word[array_position].bit_val == 0)
 			{
@@ -334,14 +334,14 @@ void PriorityScheduler::write_to_report(std::string filename)
 
 	//counter variables
 
-	int zero_counter;
-	int one_counter;
+	unsigned int zero_counter;
+	unsigned int one_counter;
 
 	std::vector<int> error_loc_non_priority;
 	std::vector<int> error_loc_priority;
 
-	int non_priority_errors = 0;
-	int priority_errors = 0;
+	unsigned int non_priority_errors = 0;
+	unsigned int priority_errors = 0;
 
 	csv_file.open(filename, std::ios_base::app);
 
